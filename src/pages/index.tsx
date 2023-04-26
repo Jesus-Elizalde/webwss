@@ -11,7 +11,7 @@ const Home: NextPage = () => {
       <div className="hero w-full bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <img
-            src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
+            src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/4987cdc3-a063-4eb9-9371-05af6fc0d4be.webp"
             className="rounded-lg shadow-2xl lg:max-w-sm"
           />
           <div>
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
               />
             </figure>
             <div className="card-body">
-              <h1 className="card-title ">Nike Tiempo Pro</h1>
+              <h1 className="card-title ">Nike Tiempo Legend 9 Pro FG</h1>
               <div className="flex">
                 <p>Nike</p>
                 <p>$140.00</p>
@@ -52,30 +52,32 @@ const Home: NextPage = () => {
           <div className="card mb-8 w-96 bg-base-100 shadow-xl">
             <figure>
               <img
-                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
+                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/speed.webp"
                 alt="Shoes"
               />
             </figure>
             <div className="card-body">
-              <h1 className="card-title ">Nike Tiempo Pro</h1>
+              <h1 className="card-title ">
+                X SPEEDPORTAL.1 FIRM GROUND SOCCER CLEATS
+              </h1>
               <div className="flex">
                 <p>Nike</p>
-                <p>$140.00</p>
+                <p>$250.00</p>
               </div>
             </div>
           </div>
           <div className="card mb-8 w-96 bg-base-100 shadow-xl">
             <figure>
               <img
-                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
+                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/future.webp"
                 alt="Shoes"
               />
             </figure>
             <div className="card-body">
-              <h1 className="card-title ">Nike Tiempo Pro</h1>
+              <h1 className="card-title ">FUTURE ULTIMATE FG/AG</h1>
               <div className="flex">
-                <p>Nike</p>
-                <p>$140.00</p>
+                <p>Puma</p>
+                <p>$220.00</p>
               </div>
             </div>
           </div>
