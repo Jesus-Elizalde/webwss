@@ -1,9 +1,13 @@
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { type ReactNode } from "react";
 import {
   MdOutlineDashboard,
   MdOutlineInventory2,
+  MdOutlineLogout,
   MdOutlineSettings,
+  MdOutlineStorefront,
 } from "react-icons/md";
 
 type Props = {
@@ -11,6 +15,7 @@ type Props = {
 };
 
 const AdminNav = ({ children }: Props) => {
+  const { data: sessionData } = useSession();
   return (
     <div className="drawer drawer-mobile">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -44,6 +49,34 @@ const AdminNav = ({ children }: Props) => {
             <Link href="/admin/settings">
               <MdOutlineSettings />
               Settings
+            </Link>
+          </li>
+          <li>
+            <Link href="/">
+              <MdOutlineStorefront />
+              Go to Page
+            </Link>
+          </li>
+          <li>
+            <Link href="">
+              <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
+                <div className=" rounded-full">
+                  <Image
+                    src={sessionData?.user?.image ?? ""}
+                    alt={sessionData?.user?.name ?? ""}
+                    fill
+                    className="rounded-full"
+                  />
+                </div>
+              </label>
+              Settings
+              <span
+                className="flex items-center"
+                onClick={() => void signOut()}
+              >
+                <MdOutlineLogout />
+                Sign Out
+              </span>
             </Link>
           </li>
         </ul>
