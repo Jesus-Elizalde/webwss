@@ -1,12 +1,12 @@
 import React from "react";
 import { ProtectedAdminLayout } from "~/components/Layouts/protectedAdminLayout";
 
-const AdminPage = () => {
+const index = () => {
   return (
     <ProtectedAdminLayout>
-      <div>Dashboard</div>
+      <div>loading</div>
     </ProtectedAdminLayout>
   );
 };
 
-export default AdminPage;
+export default index;

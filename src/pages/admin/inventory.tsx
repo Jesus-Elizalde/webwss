@@ -1,7 +1,12 @@
 import React from "react";
+import { ProtectedAdminLayout } from "~/components/Layouts/protectedAdminLayout";
 
 const InventoryPage = () => {
-  return <div>Inventory Page</div>;
+  return (
+    <ProtectedAdminLayout>
+      <div>Inventory Page</div>
+    </ProtectedAdminLayout>
+  );
 };
 
 export default InventoryPage;
