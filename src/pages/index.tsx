@@ -10,12 +10,10 @@ import Card from "~/components/Card";
 
 const Home: NextPage = () => {
   return (
-    <div className="flex flex-col items-center lg:mx-10">
-      <NavBar />
+    <div className="flex flex-col items-center">
       <Hero />
       <FeaturedCarousel />
       <MediaHero />
-      <Footer />
     </div>
   );
 };
