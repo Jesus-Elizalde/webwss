@@ -22,10 +22,10 @@ const NavBar = () => {
       <div className="mb-4 w-full border-t-2"></div>
       <div className="mb-10 flex w-full justify-center gap-4">
         <Link href="/footwear">Footwear</Link>
-        <a href="/jersey">Jerseys</a>
-        <a href="/accessory">Accessories</a>
-        <a href="/equipment">Equipment</a>
-        <a href="/clothing">Clothing</a>
+        <Link href="/jersey">Jerseys</Link>
+        <Link href="/accessory">Accessories</Link>
+        <Link href="/equipment">Equipment</Link>
+        <Link href="/clothing">Clothing</Link>
       </div>
     </>
   );
