@@ -17,10 +17,11 @@ const NavBar = () => {
         </div>
       </div>
       <div className="mb-4 w-full border-t-2"></div>
-      <div className="width-full flex justify-center gap-4">
+      <div className="flex w-full justify-center gap-4">
         <a href="">Footwear</a>
         <a href="">Jerseys</a>
         <a href="">Accessories</a>
+        <a href="">Equipment</a>
         <a href="">Clothing</a>
       </div>
     </>
