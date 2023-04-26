@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { SiAdidas, SiNike, SiPuma } from "react-icons/si";
 
@@ -6,9 +7,12 @@ const Hero = () => {
     <>
       <div className="hero w-full bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <img
+          <Image
             src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/4987cdc3-a063-4eb9-9371-05af6fc0d4be.webp"
             className="rounded-lg shadow-2xl lg:max-w-sm"
+            alt=""
+            width={385}
+            height={480}
           />
           <div>
             <h1 className="text-5xl font-bold">Explore and Shop!</h1>

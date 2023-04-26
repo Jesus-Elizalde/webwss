@@ -1,11 +1,11 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FiSearch, FiUser } from "react-icons/fi";
 
 const NavBar = () => {
   const { data: sessionData } = useSession();
-  console.log("🚀 ~ file: index.tsx:8 ~ NavBar ~ sessionData:", sessionData);
 
   return (
     <>
@@ -17,7 +17,7 @@ const NavBar = () => {
           <Link href="/">The WSS</Link>
         </div>
         {!sessionData?.user ? (
-          <div className="navbar-end" onClick={() => signIn()}>
+          <div className="navbar-end" onClick={() => void signIn()}>
             <span className="mr-2">
               <FiUser />
             </span>
@@ -28,10 +28,10 @@ const NavBar = () => {
             <div className="dropdown-end dropdown">
               <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
                 <div className="w-10 rounded-full">
-                  <img
+                  <Image
                     src={sessionData?.user?.image ?? ""}
                     alt={sessionData?.user?.name ?? ""}
-                    // fill
+                    fill
                     className="rounded-full"
                   />
                 </div>

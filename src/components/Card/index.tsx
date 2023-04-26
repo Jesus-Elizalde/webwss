@@ -1,13 +1,16 @@
+import Image from "next/image";
 import React from "react";
 
 const Card = () => {
   return (
     <div className="card w-[312] bg-base-100">
       <figure>
-        <img
+        <Image
           src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
           alt="Shoes"
-          className="h-[400px] w-[312px]"
+          // className="h-[400px] w-[312px]"
+          width={312}
+          height={400}
         />
       </figure>
       <div className="card-body">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const MediaHero = () => {
@@ -7,20 +8,23 @@ const MediaHero = () => {
         Follow Products and Updates on Instagram
       </h1>
       <div className="flex flex-wrap gap-4 ">
-        <img
+        <Image
           src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/4987cdc3-a063-4eb9-9371-05af6fc0d4be.webp"
           alt=""
-          className="w-24"
+          width={96}
+          height={120}
         />
-        <img
+        <Image
           src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/4987cdc3-a063-4eb9-9371-05af6fc0d4be.webp"
           alt=""
-          className="w-24"
+          width={96}
+          height={120}
         />
-        <img
+        <Image
           src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/4987cdc3-a063-4eb9-9371-05af6fc0d4be.webp"
           alt=""
-          className="w-24"
+          width={96}
+          height={120}
         />
       </div>
     </div>

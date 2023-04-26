@@ -1,12 +1,15 @@
+import Image from "next/image";
 import React from "react";
 
 const MainCard = () => {
   return (
     <div className="card">
       <figure>
-        <img
+        <Image
           src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
           alt="Shoes"
+          width={522}
+          height={653}
         />
       </figure>
       <div className="card-body">

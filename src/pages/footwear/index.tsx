@@ -1,5 +1,4 @@
 import React from "react";
-import Card from "~/components/Card";
 import MainCard from "~/components/Card/MainCard";
 
 const FootwearPage = () => {

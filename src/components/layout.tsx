@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function Layout({ children }: Props) {
-  let admin = false;
+  const admin = false;
   return (
     <>
       <main className={!admin ? "lg:mx-10" : ""}>
