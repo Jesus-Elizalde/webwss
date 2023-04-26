@@ -30,6 +30,57 @@ const Home: NextPage = () => {
         <SiAdidas size={55} />
         <SiPuma size={55} />
       </div>
+
+      <div className="flex flex-col items-center">
+        <h1 className="text-3xl font-bold">Just In</h1>
+        <div className="lg:flex lg:gap-2">
+          <div className="card mb-8 w-96 bg-base-100 shadow-xl">
+            <figure>
+              <img
+                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
+                alt="Shoes"
+              />
+            </figure>
+            <div className="card-body">
+              <h1 className="card-title ">Nike Tiempo Pro</h1>
+              <div className="flex">
+                <p>Nike</p>
+                <p>$140.00</p>
+              </div>
+            </div>
+          </div>
+          <div className="card mb-8 w-96 bg-base-100 shadow-xl">
+            <figure>
+              <img
+                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
+                alt="Shoes"
+              />
+            </figure>
+            <div className="card-body">
+              <h1 className="card-title ">Nike Tiempo Pro</h1>
+              <div className="flex">
+                <p>Nike</p>
+                <p>$140.00</p>
+              </div>
+            </div>
+          </div>
+          <div className="card mb-8 w-96 bg-base-100 shadow-xl">
+            <figure>
+              <img
+                src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
+                alt="Shoes"
+              />
+            </figure>
+            <div className="card-body">
+              <h1 className="card-title ">Nike Tiempo Pro</h1>
+              <div className="flex">
+                <p>Nike</p>
+                <p>$140.00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
