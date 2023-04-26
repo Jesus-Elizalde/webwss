@@ -2,11 +2,12 @@ import React from "react";
 
 const Card = () => {
   return (
-    <div className="card mb-8 w-96 bg-base-100 shadow-xl">
+    <div className="card w-[312] bg-base-100">
       <figure>
         <img
           src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
           alt="Shoes"
+          className="h-[400px] w-[312px]"
         />
       </figure>
       <div className="card-body">
