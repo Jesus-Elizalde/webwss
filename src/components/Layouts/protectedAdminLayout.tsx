@@ -17,10 +17,6 @@ type Props = {
 export const ProtectedAdminLayout = ({ children }: Props): JSX.Element => {
   const router = useRouter();
   const { data: sessionDate, status: sessionStatus } = useSession();
-  console.log(
-    "🚀 ~ file: protectedLayouts.tsx:20 ~ ProtectedLayout ~ sessionStatus:",
-    sessionStatus
-  );
   const authorized = sessionDate?.user.role === "admin";
   const unAuthorized = sessionDate?.user.role !== "admin";
   const loading = sessionStatus === "loading";
