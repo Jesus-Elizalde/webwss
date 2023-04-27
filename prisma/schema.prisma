@@ -20,6 +20,40 @@ model Example {
     updatedAt DateTime @updatedAt
 }
 
+model Product {
+    id          Int      @id @default(autoincrement())
+    name        String
+    description String?
+    price       Float
+    stock       Int
+    category    String
+    brand       String
+    model       String?
+    color       String?
+    size        String?
+    images      String[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    tags        Tag[]    @relation("ProductTag")
+    Sale        Sale[]
+}
+
+model Tag {
+    id        Int       @id @default(autoincrement())
+    name      String
+    createdAt DateTime  @default(now())
+    products  Product[] @relation("ProductTag")
+}
+
+model Sale {
+    id         Int      @id @default(autoincrement())
+    product    Product  @relation(fields: [productId], references: [id])
+    quantity   Int
+    totalPrice Float
+    createdAt  DateTime @default(now())
+    productId  Int
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
