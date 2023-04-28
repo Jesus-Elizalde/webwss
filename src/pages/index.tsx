@@ -3,7 +3,6 @@ import { type NextPage } from "next";
 import Hero from "~/components/Hero";
 import FeaturedCarousel from "~/components/Card/featured";
 import MediaHero from "~/components/Hero/MediaHero";
-import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   return (
