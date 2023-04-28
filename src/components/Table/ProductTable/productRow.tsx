@@ -1,23 +1,30 @@
 import React, { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import Modal from "~/components/Modal";
-import type { RouterOutputs } from "~/utils/api";
+import { type RouterOutputs, api } from "~/utils/api";
 
 type products = RouterOutputs["product"]["getAll"][0];
 
 type Props = {
   product: products;
   idx: number;
-  deleteProduct(): void;
 };
 
-const ProductRow = ({ product, idx, deleteProduct }: Props) => {
+const ProductRow = ({ product, idx }: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const handleToggleDelete = () => setOpenDeleteModal((prev) => !prev);
 
+  const { refetch: refetchProducts } = api.product.getAll.useQuery();
+
+  const deleteProducts = api.product.delete.useMutation({
+    onSuccess: () => {
+      void refetchProducts();
+    },
+  });
+
   const handleDelete = () => {
+    deleteProducts.mutate({ id: `${product.id}` });
     handleToggleDelete();
-    deleteProduct();
   };
   return (
     <tr key={product.id}>

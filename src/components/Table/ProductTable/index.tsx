@@ -6,10 +6,9 @@ type products = RouterOutputs["product"]["getAll"][0];
 
 type Props = {
   products?: products[];
-  deleteProduct: any;
 };
 
-const ProductTable = ({ products, deleteProduct }: Props) => {
+const ProductTable = ({ products }: Props) => {
   return (
     <div className="overflow-x-auto">
       <table className="table-compact table w-full">
@@ -27,14 +26,7 @@ const ProductTable = ({ products, deleteProduct }: Props) => {
         </thead>
         <tbody>
           {products?.map((product, idx) => (
-            <ProductRow
-              idx={idx}
-              product={product}
-              key={product.id}
-              deleteProduct={() =>
-                void deleteProduct.mutate({ id: `${product.id}` })
-              }
-            />
+            <ProductRow idx={idx} product={product} key={product.id} />
           ))}
         </tbody>
       </table>

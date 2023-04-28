@@ -34,12 +34,6 @@ const InventoryPage = () => {
     },
   });
 
-  const deleteProduct = api.product.delete.useMutation({
-    onSuccess: () => {
-      void refetchProducts();
-    },
-  });
-
   const initValues: Yup.InferType<typeof productSchema> = {
     name: "",
     description: "",
@@ -255,7 +249,7 @@ const InventoryPage = () => {
           </div>
         </Modal>
 
-        <ProductTable products={products} deleteProduct={deleteProduct} />
+        <ProductTable products={products} />
       </>
     </ProtectedAdminLayout>
   );
