@@ -8,7 +8,9 @@ import {
 
 export const productRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.product.findMany();
+    return ctx.prisma.product.findMany({
+      orderBy: [{ createdAt: "desc" }],
+    });
   }),
 
   create: protectedProcedure
@@ -39,6 +41,16 @@ export const productRouter = createTRPCRouter({
           color: input.color,
           size: input.size,
           images: input.name,
+        },
+      });
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.product.delete({
+        where: {
+          id: +input.id,
         },
       });
     }),
