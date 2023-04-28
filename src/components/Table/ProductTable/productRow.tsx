@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import Modal from "~/components/Modal";
-import { RouterOutputs } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
 
 type products = RouterOutputs["product"]["getAll"][0];
 

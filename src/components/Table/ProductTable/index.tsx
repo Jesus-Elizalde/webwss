@@ -1,7 +1,5 @@
-import { type } from "os";
 import React from "react";
-import { IoMdTrash } from "react-icons/io";
-import { RouterOutputs } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
 import ProductRow from "./productRow";
 
 type products = RouterOutputs["product"]["getAll"][0];
