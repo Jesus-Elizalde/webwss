@@ -28,7 +28,7 @@ model Product {
     stock       Int
     category    String
     brand       String
-    model       String?
+    model       String
     color       String?
     size        String?
     images      String[]

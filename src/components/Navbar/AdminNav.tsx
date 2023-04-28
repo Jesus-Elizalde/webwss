@@ -17,7 +17,7 @@ type Props = {
 const AdminNav = ({ children }: Props) => {
   const { data: sessionData } = useSession();
   return (
-    <div className="drawer drawer-mobile">
+    <div className="drawer-mobile drawer">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col ">
         {/* <!-- Page content here --> */}
