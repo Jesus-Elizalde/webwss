@@ -17,15 +17,16 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        description: z.string().nullable(),
+        description: z.string().optional(),
         price: z.number(),
         stock: z.number(),
         category: z.string(),
         brand: z.string(),
         model: z.string(),
-        color: z.string().nullable(),
-        size: z.string().nullable(),
-        images: z.string().array().nullable(),
+        color: z.string().optional(),
+        size: z.string().optional(),
+        images: z.string().array(),
+        tags: z.string().array(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -40,7 +41,15 @@ export const productRouter = createTRPCRouter({
           model: input.model,
           color: input.color,
           size: input.size,
-          images: input.name,
+          images: input.images.map((image) => image),
+          tags: {
+            connectOrCreate: input.tags.map((tag) => {
+              return {
+                where: { name: tag },
+                create: { name: tag },
+              };
+            }),
+          },
         },
       });
     }),
