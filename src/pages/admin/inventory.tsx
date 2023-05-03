@@ -18,7 +18,17 @@ const productSchema = Yup.object().shape({
   model: Yup.string().required("Is Required"),
   color: Yup.string(),
   size: Yup.string(),
-  images: Yup.array().of(Yup.string().required()).required(),
+  images: Yup.array()
+    .of(
+      Yup.string()
+        .url("Please enter a valid URL")
+        .matches(
+          /\.(jpg|jpeg|png|gif|webp)$/i,
+          "Please enter a valid image URL (jpg, jpeg, png, or gif,webp)"
+        )
+        .required()
+    )
+    .required(),
   tags: Yup.array().of(Yup.string().required()).required(),
 });
 

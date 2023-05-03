@@ -13,6 +13,23 @@ export const productRouter = createTRPCRouter({
     });
   }),
 
+  getByTag: publicProcedure
+    .input(z.object({ tag: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.tag.findMany({
+        include: { products: true },
+        where: { name: input.tag },
+      });
+    }),
+
+  getByCategory: publicProcedure
+    .input(z.object({ category: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.product.findMany({
+        where: { category: input.category },
+      });
+    }),
+
   create: protectedProcedure
     .input(
       z.object({

@@ -1,22 +1,31 @@
 import Image from "next/image";
 import React from "react";
+import type { RouterOutputs } from "~/utils/api";
 
-const MainCard = () => {
+type Product = RouterOutputs["product"]["getAll"][0];
+
+type Props = {
+  product: Product;
+};
+
+const MainCard = ({ product }: Props) => {
   return (
     <div className="card">
       <figure>
-        <Image
-          src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/nike%20tiempo.webp"
-          alt="Shoes"
-          width={522}
-          height={653}
-        />
+        {product?.images[0] && (
+          <Image
+            src={product.images[0]}
+            alt={product.name}
+            width={522}
+            height={653}
+          />
+        )}
       </figure>
       <div className="card-body">
-        <h2 className="card-title">Nike Tiempo Legend 9 Pro FG</h2>
+        <h2 className="card-title">{product.name}</h2>
         <div className="flex">
-          <p>Nike</p>
-          <p>$140.00</p>
+          <p>{product.brand}</p>
+          <p>${product.price}.00</p>
         </div>
       </div>
     </div>
