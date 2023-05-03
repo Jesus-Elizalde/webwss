@@ -63,8 +63,8 @@ const NavBar = () => {
       <div className="mb-10 flex w-full justify-center gap-4">
         <Link href="/footwear">Footwear</Link>
         <Link href="/jersey">Jerseys</Link>
-        <Link href="/accessory">Accessories</Link>
-        <Link href="/clothing">Apparel</Link>
+        <Link href="/accessories">Accessories</Link>
+        <Link href="/apparel">Apparel</Link>
       </div>
     </>
   );
