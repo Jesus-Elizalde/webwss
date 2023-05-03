@@ -64,8 +64,7 @@ const NavBar = () => {
         <Link href="/footwear">Footwear</Link>
         <Link href="/jersey">Jerseys</Link>
         <Link href="/accessory">Accessories</Link>
-        <Link href="/equipment">Equipment</Link>
-        <Link href="/clothing">Clothing</Link>
+        <Link href="/clothing">Apparel</Link>
       </div>
     </>
   );
