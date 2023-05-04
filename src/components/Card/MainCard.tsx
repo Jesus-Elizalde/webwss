@@ -11,7 +11,7 @@ type Props = {
 const MainCard = ({ product }: Props) => {
   return (
     <div className="card">
-      <figure>
+      <figure className="h-[238px] lg:min-h-[653px]">
         {product?.images[0] && (
           <Image
             src={product.images[0]}

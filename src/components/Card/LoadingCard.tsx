@@ -1,10 +1,10 @@
 import React from "react";
 
-const LoadingMainCard = () => {
+const LoadingCard = () => {
   return (
     <div className="card w-[312] animate-pulse">
       <figure>
-        <div className="flex h-[250px] w-full items-center justify-center rounded bg-base-300 dark:bg-neutral lg:h-[653px]">
+        <div className="flex h-[400px] w-full items-center justify-center rounded bg-base-300 dark:bg-neutral">
           <svg
             className="h-12 w-12 text-base-200"
             xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@ const LoadingMainCard = () => {
         </div>
       </figure>
       <div className="card-body">
-        <h2 className="card-title h-2.5 rounded-full bg-base-200 dark:bg-neutral lg:w-80"></h2>
+        <h1 className="card-title h-2.5 rounded-full bg-base-200 dark:bg-neutral lg:w-80"></h1>
         <div className="flex">
           <p className="mr-48 h-2 rounded-full bg-base-200 dark:bg-neutral lg:w-[75px]"></p>
           <p className="h-2 rounded-full bg-base-200 dark:bg-neutral lg:w-[50px]"></p>
@@ -27,4 +27,4 @@ const LoadingMainCard = () => {
   );
 };
 
-export default LoadingMainCard;
+export default LoadingCard;
