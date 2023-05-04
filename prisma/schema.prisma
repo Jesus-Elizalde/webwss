@@ -20,29 +20,75 @@ model Example {
     updatedAt DateTime @updatedAt
 }
 
-model Product {
-    id          Int      @id @default(autoincrement())
-    name        String
-    description String?
-    price       Float
-    stock       Int
-    category    String
-    brand       String
-    model       String
-    color       String?
-    size        String?
-    images      String[]
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    tags        Tag[]    @relation("ProductTag")
-    Sale        Sale[]
+enum CollectionType {
+    MEN
+    WOMEN
+    KID
+    SALE
 }
 
-model Tag {
-    id        Int       @id @default(autoincrement())
-    name      String    @unique
-    createdAt DateTime  @default(now())
-    products  Product[] @relation("ProductTag")
+model Collection {
+    id        Int              @id @default(autoincrement())
+    createdAt DateTime         @default(now())
+    updatedAt DateTime         @updatedAt
+    name      String           @db.VarChar(255)
+    slug      String           @unique
+    types     CollectionType[]
+    parentId  Int?
+    parent    Collection?      @relation(name: "ParentChild", fields: [parentId], references: [id])
+    children  Collection[]     @relation(name: "ParentChild")
+    products  Product[]
+    sizes     ProductSize[]
+    colors    ProductColor[]
+}
+
+model Product {
+    id           Int              @id @default(autoincrement())
+    createdAt    DateTime         @default(now())
+    updatedAt    DateTime         @updatedAt
+    name         String           @db.VarChar(255)
+    description  String
+    price        Float
+    stock        Int
+    rate         Float
+    published    Boolean          @default(false)
+    images       ProductImage[]
+    colors       ProductColor[]
+    sizes        ProductSize[]
+    types        CollectionType[]
+    collection   Collection       @relation(fields: [collectionId], references: [id])
+    collectionId Int
+    Sale         Sale[]
+}
+
+model ProductImage {
+    id        Int      @id @default(autoincrement())
+    imageURL  String
+    imageBlur String
+    Product   Product? @relation(fields: [productId], references: [id])
+    productId Int?
+}
+
+model ProductSize {
+    id          Int        @id @default(autoincrement())
+    size        String
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    Collection  Collection @relation(fields: [collectonId], references: [id])
+    collectonId Int
+    Product     Product?   @relation(fields: [productId], references: [id])
+    productId   Int?
+}
+
+model ProductColor {
+    id          Int        @id @default(autoincrement())
+    color       String
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    Collection  Collection @relation(fields: [collectonId], references: [id])
+    collectonId Int
+    Product     Product?   @relation(fields: [productId], references: [id])
+    productId   Int?
 }
 
 model Sale {
