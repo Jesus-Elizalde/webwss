@@ -23,7 +23,8 @@ model Example {
 enum CollectionType {
     MEN
     WOMEN
-    KID
+    BOYS
+    GIRLS
     SALE
 }
 
@@ -38,8 +39,6 @@ model Collection {
     parent    Collection?      @relation(name: "ParentChild", fields: [parentId], references: [id])
     children  Collection[]     @relation(name: "ParentChild")
     products  Product[]
-    sizes     ProductSize[]
-    colors    ProductColor[]
 }
 
 model Product {
@@ -47,9 +46,8 @@ model Product {
     createdAt    DateTime         @default(now())
     updatedAt    DateTime         @updatedAt
     name         String           @db.VarChar(255)
-    description  String
+    description  String?
     price        Float
-    stock        Int
     rate         Float
     published    Boolean          @default(false)
     images       ProductImage[]
@@ -58,37 +56,54 @@ model Product {
     types        CollectionType[]
     collection   Collection       @relation(fields: [collectionId], references: [id])
     collectionId Int
-    Sale         Sale[]
+    sale         Sale[]
+    model        Model            @relation(fields: [modelId], references: [id])
+    modelId      Int
 }
 
 model ProductImage {
     id        Int      @id @default(autoincrement())
-    imageURL  String
-    imageBlur String
+    imageURL  String   @unique
     Product   Product? @relation(fields: [productId], references: [id])
     productId Int?
 }
 
-model ProductSize {
-    id          Int        @id @default(autoincrement())
-    size        String
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime   @updatedAt
-    Collection  Collection @relation(fields: [collectonId], references: [id])
-    collectonId Int
-    Product     Product?   @relation(fields: [productId], references: [id])
-    productId   Int?
+model Model {
+    id       Int       @id @default(autoincrement())
+    name     String
+    products Product[]
+    Brand    Brand?    @relation(fields: [brandId], references: [id])
+    brandId  Int?
 }
 
-model ProductColor {
-    id          Int        @id @default(autoincrement())
-    color       String
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime   @updatedAt
-    Collection  Collection @relation(fields: [collectonId], references: [id])
-    collectonId Int
-    Product     Product?   @relation(fields: [productId], references: [id])
-    productId   Int?
+model Brand {
+    id     Int     @id @default(autoincrement())
+    name   String
+    models Model[]
+}
+
+enum ProductSize {
+    XXS
+    XS
+    S
+    M
+    L
+    XL
+    XXL
+    XXXL
+}
+
+enum ProductColor {
+    BLACK
+    WHITE
+    GRAY
+    RED
+    ORANGE
+    YELLOW
+    GREEN
+    PINK
+    BLUE
+    PURPLE
 }
 
 model Sale {

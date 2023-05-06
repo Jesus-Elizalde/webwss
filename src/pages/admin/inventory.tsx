@@ -7,17 +7,29 @@ import * as Yup from "yup";
 
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import ProductTable from "~/components/Table/ProductTable";
+import { CollectionType, ProductColor, ProductSize } from "@prisma/client";
 
 const productSchema = Yup.object().shape({
   name: Yup.string().required("Is Required"),
   description: Yup.string(),
   price: Yup.number().min(0, "Cannot be a negative number").defined(),
-  stock: Yup.number().min(0, "Cannot be a negative number").defined(),
-  category: Yup.string().required("Is Required"),
-  brand: Yup.string().required("Is Required"),
-  model: Yup.string().required("Is Required"),
-  color: Yup.string(),
-  size: Yup.string(),
+  rate: Yup.number().min(0, "Cannot be a negative number").defined(),
+  published: Yup.boolean().required(),
+  modelId: Yup.number().required("Is Required"),
+  collectionId: Yup.number().required("Is Required"),
+  colors: Yup.array()
+    .of(Yup.mixed<ProductColor>().oneOf(Object.values(ProductColor)).required())
+    .required(),
+  sizes: Yup.array()
+    .of(Yup.mixed<ProductSize>().oneOf(Object.values(ProductSize)).required())
+    .required(),
+  types: Yup.array()
+    .of(
+      Yup.mixed<CollectionType>()
+        .oneOf(Object.values(CollectionType))
+        .required()
+    )
+    .required(),
   images: Yup.array()
     .of(
       Yup.string()
@@ -29,12 +41,18 @@ const productSchema = Yup.object().shape({
         .required()
     )
     .required(),
-  tags: Yup.array().of(Yup.string().required()).required(),
 });
 
 const InventoryPage = () => {
   const { data: products, refetch: refetchProducts } =
-    api.product.getAll.useQuery(undefined);
+    api.product.getAll.useQuery();
+
+  const { data: models } = api.model.getAll.useQuery();
+  const { data: collections } = api.collection.getAll.useQuery();
+  console.log(
+    "🚀 ~ file: inventory.tsx:52 ~ InventoryPage ~ collections:",
+    collections
+  );
 
   const [open, setOpen] = useState(false);
   const handleToggle = () => setOpen((prev) => !prev);
@@ -48,15 +66,15 @@ const InventoryPage = () => {
   const initValues: Yup.InferType<typeof productSchema> = {
     name: "",
     description: "",
-    brand: "",
-    category: "",
     price: 0,
-    stock: 0,
-    color: "",
+    rate: 0,
+    published: false,
     images: [""],
-    model: "",
-    size: "",
-    tags: [""],
+    colors: ["BLACK"],
+    sizes: ["M"],
+    types: ["MEN"],
+    modelId: 0,
+    collectionId: 0,
   };
 
   return (
@@ -74,7 +92,11 @@ const InventoryPage = () => {
               validationSchema={productSchema}
               onSubmit={(values, actions) => {
                 console.log({ values, actions });
-                createProduct.mutate({ ...values });
+                createProduct.mutate({
+                  ...values,
+                  collectionId: +values.collectionId,
+                  modelId: +values.modelId,
+                });
                 actions.setSubmitting(false);
                 actions.resetForm();
                 handleToggle();
@@ -116,6 +138,23 @@ const InventoryPage = () => {
                           </span>
                         </label>
                       </div>
+                      <div className="form-control">
+                        <label className="label cursor-pointer">
+                          <span className="label-text">Published:</span>
+                          <Field
+                            id="published"
+                            type="checkbox"
+                            name="published"
+                            placeholder="Published"
+                            className="toggle"
+                          />
+                          <label className="label">
+                            <span className="label-text-alt">
+                              <ErrorMessage name="published" />
+                            </span>
+                          </label>
+                        </label>
+                      </div>
                       <div className="form-control w-full max-w-xs">
                         <label className="label">
                           <span className="label-text">Price:</span>
@@ -130,105 +169,6 @@ const InventoryPage = () => {
                         <label className="label">
                           <span className="label-text-alt">
                             <ErrorMessage name="price" />
-                          </span>
-                        </label>
-                      </div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text">Stock:</span>
-                        </label>
-                        <Field
-                          id="stock"
-                          type="number"
-                          name="stock"
-                          placeholder="Name"
-                          className="input-bordered input w-full max-w-xs"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt">
-                            <ErrorMessage name="stock" />
-                          </span>
-                        </label>
-                      </div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text">Category:</span>
-                        </label>
-                        <Field
-                          id="category"
-                          name="category"
-                          placeholder="Category"
-                          className="input-bordered input w-full max-w-xs"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt">
-                            <ErrorMessage name="category" />
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text">Brand:</span>
-                        </label>
-                        <Field
-                          id="brand"
-                          name="brand"
-                          placeholder="Brand"
-                          className="input-bordered input w-full max-w-xs"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt">
-                            <ErrorMessage name="brand" />
-                          </span>
-                        </label>
-                      </div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text">Model:</span>
-                        </label>
-                        <Field
-                          id="model"
-                          name="model"
-                          placeholder="Model"
-                          className="input-bordered input w-full max-w-xs"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt">
-                            <ErrorMessage name="model" />
-                          </span>
-                        </label>
-                      </div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text">Color:</span>
-                        </label>
-                        <Field
-                          id="color"
-                          name="color"
-                          placeholder="Color"
-                          className="input-bordered input w-full max-w-xs"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt">
-                            <ErrorMessage name="color" />
-                          </span>
-                        </label>
-                      </div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text">Size:</span>
-                        </label>
-                        <Field
-                          id="size"
-                          name="size"
-                          placeholder="Size"
-                          className="input-bordered input w-full max-w-xs"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt">
-                            <ErrorMessage name="size" />
                           </span>
                         </label>
                       </div>
@@ -247,7 +187,7 @@ const InventoryPage = () => {
                                   <div key={index}>
                                     <Field
                                       name={`images.${index}`}
-                                      className="input-bordered input w-full max-w-xs"
+                                      className="input-bordered input w-48 max-w-xs"
                                     />
                                     <button
                                       type="button"
@@ -288,28 +228,40 @@ const InventoryPage = () => {
                           </span>
                         </label>
                       </div>
+                    </div>
+                    <div>
                       <div className="form-control w-full max-w-xs ">
                         <label className="label">
-                          <span className="label-text">Tags:</span>
+                          <span className="label-text">Colors:</span>
                         </label>
                         <FieldArray
-                          name="tags"
+                          name="colors"
                           render={(arrayHelpers) => (
                             <div className="h-48 overflow-y-auto">
-                              {values.tags && values.tags.length > 0 ? (
-                                values.tags.map((tag, index) => (
+                              {values.colors && values.colors.length > 0 ? (
+                                values.colors.map((image, index) => (
                                   <div key={index}>
                                     <Field
-                                      name={`tags.${index}`}
-                                      className="input-bordered input w-full max-w-xs"
-                                    />
+                                      as="select"
+                                      name={`colors.${index}`}
+                                      className="input-bordered input w-48 max-w-xs"
+                                    >
+                                      {Object.values(ProductColor).map(
+                                        (color, idx) => (
+                                          <option value={color} key={idx}>
+                                            {color}
+                                          </option>
+                                        )
+                                      )}
+                                    </Field>
+
                                     <button
                                       type="button"
                                       className="btn"
                                       onClick={() =>
-                                        values.tags.length > 1 &&
+                                        values.colors.length > 1 &&
                                         arrayHelpers.remove(index)
-                                      } // remove a tag from the list
+                                      } // remove a image from the list
                                     >
                                       -
                                     </button>
@@ -330,7 +282,7 @@ const InventoryPage = () => {
                                   onClick={() => arrayHelpers.push("")}
                                 >
                                   {/* show this when user has removed all friends from the list */}
-                                  Add Image
+                                  Add Color
                                 </button>
                               )}
                             </div>
@@ -338,7 +290,187 @@ const InventoryPage = () => {
                         />
                         <label className="label">
                           <span className="label-text-alt">
-                            <ErrorMessage name="tags" />
+                            <ErrorMessage name="colors" />
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="form-control w-full max-w-xs ">
+                        <label className="label">
+                          <span className="label-text">Sizes:</span>
+                        </label>
+                        <FieldArray
+                          name="sizes"
+                          render={(arrayHelpers) => (
+                            <div className="h-48 overflow-y-auto">
+                              {values.sizes && values.sizes.length > 0 ? (
+                                values.sizes.map((image, index) => (
+                                  <div key={index}>
+                                    <Field
+                                      as="select"
+                                      name={`sizes.${index}`}
+                                      className="input-bordered input w-28 max-w-xs"
+                                    >
+                                      {Object.values(ProductSize).map(
+                                        (size, idx) => (
+                                          <option value={size} key={idx}>
+                                            {size}
+                                          </option>
+                                        )
+                                      )}
+                                    </Field>
+
+                                    <button
+                                      type="button"
+                                      className="btn"
+                                      onClick={() =>
+                                        values.sizes.length > 1 &&
+                                        arrayHelpers.remove(index)
+                                      } // remove a image from the list
+                                    >
+                                      -
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="btn"
+                                      onClick={() =>
+                                        arrayHelpers.insert(index, "")
+                                      } // insert an empty string at a position
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                ))
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => arrayHelpers.push("")}
+                                >
+                                  {/* show this when user has removed all friends from the list */}
+                                  Add Color
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        />
+                        <label className="label">
+                          <span className="label-text-alt">
+                            <ErrorMessage name="sizes" />
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="form-control w-full max-w-xs ">
+                        <label className="label">
+                          <span className="label-text">Type:</span>
+                        </label>
+                        <FieldArray
+                          name="types"
+                          render={(arrayHelpers) => (
+                            <div className="h-48 overflow-y-auto">
+                              {values.types && values.types.length > 0 ? (
+                                values.types.map((image, index) => (
+                                  <div key={index}>
+                                    <Field
+                                      as="select"
+                                      name={`types.${index}`}
+                                      className="input-bordered input w-28 max-w-xs"
+                                    >
+                                      {Object.values(CollectionType).map(
+                                        (type, idx) => (
+                                          <option value={type} key={idx}>
+                                            {type}
+                                          </option>
+                                        )
+                                      )}
+                                    </Field>
+
+                                    <button
+                                      type="button"
+                                      className="btn"
+                                      onClick={() =>
+                                        values.types.length > 1 &&
+                                        arrayHelpers.remove(index)
+                                      } // remove a image from the list
+                                    >
+                                      -
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="btn"
+                                      onClick={() =>
+                                        arrayHelpers.insert(index, "")
+                                      } // insert an empty string at a position
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                ))
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => arrayHelpers.push("")}
+                                >
+                                  {/* show this when user has removed all friends from the list */}
+                                  Add Color
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        />
+                        <label className="label">
+                          <span className="label-text-alt">
+                            <ErrorMessage name="types" />
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="form-control w-full max-w-xs">
+                        <label className="label">
+                          <span className="label-text">Model:</span>
+                        </label>
+                        <Field
+                          id="modelId"
+                          as="select"
+                          name="modelId"
+                          placeholder="Model"
+                          className="input-bordered input w-full max-w-xs"
+                        >
+                          {models?.map(({ id, name }) => (
+                            <option value={+id} key={id}>
+                              {name}
+                            </option>
+                          ))}
+                        </Field>
+                        <label className="label">
+                          <span className="label-text-alt">
+                            <ErrorMessage name="modelId" />
+                          </span>
+                        </label>
+                      </div>
+                      <div className="form-control w-48 max-w-xs">
+                        <label className="label">
+                          <span className="label-text">Collection:</span>
+                        </label>
+                        <Field
+                          id="collectionId"
+                          as="select"
+                          name="collectionId"
+                          placeholder="Collection"
+                          className="input-bordered input w-28 max-w-xs"
+                        >
+                          {collections?.map(({ id, name }) => (
+                            <option value={+id} key={id}>
+                              {name}
+                            </option>
+                          ))}
+                        </Field>
+                        <label className="label">
+                          <span className="label-text-alt">
+                            <ErrorMessage name="collectionId" />
                           </span>
                         </label>
                       </div>

@@ -61,10 +61,10 @@ const NavBar = () => {
       </div>
       <div className="mb-4 w-full border-t-2"></div>
       <div className="mb-10 flex w-full justify-center gap-4">
-        <Link href="/products/footwear">Footwear</Link>
-        <Link href="/products/jersey">Jerseys</Link>
-        <Link href="/products/accessories">Accessories</Link>
-        <Link href="/products/apparel">Apparel</Link>
+        <Link href="/products/men/footwear">Footwear</Link>
+        <Link href="/products/men/jerseys">Jerseys</Link>
+        <Link href="/products/men/accessories">Accessories</Link>
+        <Link href="/products/men/apparel">Apparel</Link>
       </div>
     </>
   );

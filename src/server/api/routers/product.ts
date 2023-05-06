@@ -1,10 +1,30 @@
 import { z } from "zod";
-
 import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+  CollectionType,
+  Prisma,
+  ProductColor,
+  ProductSize,
+} from "@prisma/client";
+import { publicProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
+import { defaultCollectionSelect } from "./collection";
+
+const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
+  id: true,
+  name: true,
+  description: true,
+  price: true,
+  rate: true,
+  model: true,
+  images: {
+    select: {
+      imageURL: true,
+    },
+  },
+  types: true,
+  collection: {
+    select: defaultCollectionSelect,
+  },
+});
 
 export const productRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -13,21 +33,81 @@ export const productRouter = createTRPCRouter({
     });
   }),
 
-  getByTag: publicProcedure
-    .input(z.object({ tag: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.tag.findMany({
-        include: { products: true },
-        where: { name: input.tag },
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.product.delete({
+        where: {
+          id: +input.id,
+        },
       });
     }),
 
-  getByCategory: publicProcedure
-    .input(z.object({ category: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.product.findMany({
-        where: { category: input.category },
-      });
+  all: publicProcedure
+    .input(
+      z.object({
+        types: z.nativeEnum(CollectionType).optional(),
+        slug: z.string().optional(),
+        page: z.number().optional(),
+        rate: z.number().optional(),
+        gte: z.number().optional(),
+        lte: z.number().optional(),
+        sizes: z.nativeEnum(ProductSize).array().optional(),
+        colors: z.nativeEnum(ProductColor).array().optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const {
+        types = "MEN",
+        slug,
+        page = 1,
+        rate = 0,
+        gte = 0,
+        lte = 1000000,
+        sizes = [],
+        colors = [],
+      } = input;
+
+      const take = 12;
+      const skip = take * (page - 1);
+
+      const where: Prisma.ProductWhereInput = {
+        types: { hasSome: types },
+        published: true,
+        rate: rate ? { gte: rate } : undefined,
+        price: { gte, lte },
+        sizes: sizes.length > 0 ? { hasSome: sizes } : undefined,
+        colors: colors.length > 0 ? { hasSome: colors } : undefined,
+      };
+
+      if (slug) {
+        const isParent = await ctx.prisma.collection.findFirst({
+          where: {
+            slug,
+            parent: {
+              is: null,
+            },
+          },
+        });
+
+        where.collection = isParent ? { parentId: isParent.id } : { slug };
+      }
+
+      const [products, totalCount] = await ctx.prisma.$transaction([
+        ctx.prisma.product.findMany({
+          select: defaultProductSelect,
+          where,
+          orderBy: { id: "asc" },
+          take,
+          skip,
+        }),
+        ctx.prisma.product.count({ where }),
+      ]);
+
+      return {
+        products,
+        totalCount,
+      };
     }),
 
   create: protectedProcedure
@@ -36,14 +116,14 @@ export const productRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         price: z.number(),
-        stock: z.number(),
-        category: z.string(),
-        brand: z.string(),
-        model: z.string(),
-        color: z.string().optional(),
-        size: z.string().optional(),
+        rate: z.number(),
+        published: z.boolean(),
         images: z.string().array(),
-        tags: z.string().array(),
+        colors: z.nativeEnum(ProductColor).array().optional(),
+        modelId: z.number(),
+        sizes: z.nativeEnum(ProductSize).array(),
+        types: z.nativeEnum(CollectionType).array(),
+        collectionId: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -52,31 +132,29 @@ export const productRouter = createTRPCRouter({
           name: input.name,
           description: input.description,
           price: input.price,
-          stock: input.stock,
-          category: input.category,
-          brand: input.brand,
-          model: input.model,
-          color: input.color,
-          size: input.size,
-          images: input.images.map((image) => image),
-          tags: {
-            connectOrCreate: input.tags.map((tag) => {
+          rate: input.rate,
+          published: input.published,
+          colors: input.colors,
+          sizes: input.sizes,
+          types: input.types,
+          model: {
+            connect: {
+              id: input.modelId,
+            },
+          },
+          collection: {
+            connect: {
+              id: input.collectionId,
+            },
+          },
+          images: {
+            connectOrCreate: input.images.map((imageURL) => {
               return {
-                where: { name: tag },
-                create: { name: tag },
+                where: { imageURL: imageURL },
+                create: { imageURL: imageURL },
               };
             }),
           },
-        },
-      });
-    }),
-
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.product.delete({
-        where: {
-          id: +input.id,
         },
       });
     }),
