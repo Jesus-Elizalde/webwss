@@ -33,6 +33,15 @@ export const productRouter = createTRPCRouter({
     });
   }),
 
+  getOne: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      const { id } = input;
+      return ctx.prisma.product.findUnique({
+        where: { id: +id },
+      });
+    }),
+
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -118,7 +127,6 @@ export const productRouter = createTRPCRouter({
         price: z.number(),
         rate: z.number(),
         published: z.boolean(),
-        images: z.string().array(),
         colors: z.nativeEnum(ProductColor).array().optional(),
         modelId: z.number(),
         sizes: z.nativeEnum(ProductSize).array(),
@@ -146,14 +154,6 @@ export const productRouter = createTRPCRouter({
             connect: {
               id: input.collectionId,
             },
-          },
-          images: {
-            connectOrCreate: input.images.map((imageURL) => {
-              return {
-                where: { imageURL: imageURL },
-                create: { imageURL: imageURL },
-              };
-            }),
           },
         },
       });

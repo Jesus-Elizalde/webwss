@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import Modal from "~/components/Modal";
@@ -29,12 +30,10 @@ const ProductRow = ({ product, idx }: Props) => {
   return (
     <tr key={product.id}>
       <th>{idx + 1}</th>
-      <td>{product.name}</td>
-      <td>{product.stock}</td>
+      <td>
+        <Link href={`/admin/inventory/${product.id}`}>{product.name}</Link>
+      </td>
       <td>{product.price}</td>
-      <td>{product.brand}</td>
-      <td>{product.model}</td>
-      <td>{product.color}</td>
       <td>
         <span onClick={handleToggleDelete}>
           <IoMdTrash />
