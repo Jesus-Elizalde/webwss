@@ -9,6 +9,7 @@ type Props = {
 };
 
 const ProductTable = ({ products }: Props) => {
+  console.log("🚀 ~ file: index.tsx:12 ~ ProductTable ~ products:", products);
   return (
     <div className="overflow-x-auto">
       <table className="table-compact table w-full">
@@ -18,8 +19,6 @@ const ProductTable = ({ products }: Props) => {
             <th>Name</th>
             <th>Stock</th>
             <th>Price</th>
-            <th>Brand</th>
-            <th>Model</th>
             <th>Color</th>
             <th></th>
           </tr>

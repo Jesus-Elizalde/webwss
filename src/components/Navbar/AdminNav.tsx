@@ -40,9 +40,9 @@ const AdminNav = ({ children }: Props) => {
             </Link>
           </li>
           <li>
-            <Link href="/admin/inventory">
+            <Link href="/admin/products">
               <MdOutlineInventory2 />
-              Inventory
+              Products
             </Link>
           </li>
           <li>

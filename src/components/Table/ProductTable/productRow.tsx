@@ -34,6 +34,7 @@ const ProductRow = ({ product, idx }: Props) => {
         <Link href={`/admin/inventory/${product.id}`}>{product.name}</Link>
       </td>
       <td>{product.price}</td>
+      <td>{product.price}</td>
       <td>
         <span onClick={handleToggleDelete}>
           <IoMdTrash />
