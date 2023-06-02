@@ -1,26 +1,38 @@
 import { z } from "zod";
-import { CollectionType, Prisma, ProductColor } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { publicProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
-import { defaultCollectionSelect } from "./collection";
 
-// const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
-//   id: true,
-//   name: true,
-//   description: true,
-//   price: true,
-//   rate: true,
-//   model: true,
-//   types: true,
-//   variants: true,
-//   collection: {
-//     select: defaultCollectionSelect,
-//   },
-// });
+const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
+  id: true,
+  title: true,
+  description: true,
+  status: true,
+  tags: true,
+  images: true,
+  variants: true,
+  vendor: {
+    select: {
+      name: true,
+    },
+  },
+  productType: {
+    select: {
+      name: true,
+    },
+  },
+  collections: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+});
 
 export const productRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.product.findMany({
       orderBy: [{ createdAt: "desc" }],
+      select: defaultProductSelect,
     });
   }),
 
@@ -30,7 +42,7 @@ export const productRouter = createTRPCRouter({
       const { id } = input;
       return ctx.prisma.product.findUnique({
         where: { id: +id },
-        include: { variants: true },
+        select: defaultProductSelect,
       });
     }),
 
@@ -44,135 +56,152 @@ export const productRouter = createTRPCRouter({
       });
     }),
 
-  // Flitered for the storefront
-  // all: publicProcedure
-  //   .input(
-  //     z.object({
-  //       types: z.nativeEnum(CollectionType).optional(),
-  //       slug: z.string().optional(),
-  //       page: z.number().optional(),
-  //       rate: z.number().optional(),
-  //       gte: z.number().optional(),
-  //       lte: z.number().optional(),
-  //       sizes: z.nativeEnum(ProductSize).array().optional(),
-  //       colors: z.nativeEnum(ProductColor).array().optional(),
-  //     })
-  //   )
-  //   .query(async ({ input, ctx }) => {
-  //     const {
-  //       types = "MEN",
-  //       slug,
-  //       page = 1,
-  //       rate = 0,
-  //       gte = 0,
-  //       lte = 1000000,
-  //       sizes = [],
-  //       colors = [],
-  //     } = input;
-
-  //     const take = 12;
-  //     const skip = take * (page - 1);
-
-  //     const where: Prisma.ProductWhereInput = {
-  //       types: { hasSome: types },
-
-  //       // published: true,
-  //       rate: rate ? { gte: rate } : undefined,
-  //       price: { gte, lte },
-  //       // sizes: sizes.length > 0 ? { hasSome: sizes } : undefined,
-  //       // colors: colors.length > 0 ? { hasSome: colors } : undefined,
-  //     };
-
-  //     if (slug) {
-  //       const isParent = await ctx.prisma.collection.findFirst({
-  //         where: {
-  //           slug,
-  //           parent: {
-  //             is: null,
-  //           },
-  //         },
-  //       });
-
-  //       where.collection = isParent ? { parentId: isParent.id } : { slug };
-  //     }
-
-  //     const [products, totalCount] = await ctx.prisma.$transaction([
-  //       ctx.prisma.product.findMany({
-  //         select: defaultProductSelect,
-  //         where,
-  //         orderBy: { id: "asc" },
-  //         take,
-  //         skip,
-  //       }),
-  //       ctx.prisma.product.count({ where }),
-  //     ]);
-
-  //     return {
-  //       products,
-  //       totalCount,
-  //     };
-  //   }),
-
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
+        title: z.string(),
         description: z.string().optional(),
-        variants: z.array(
-          z.object({
+        status: z.string(),
+        collections: z.string().array(),
+        vendor: z.string().optional(),
+        productType: z.string().optional(),
+        tags: z.string().array(),
+        images: z.string().array(),
+        variants: z
+          .object({
+            title: z.string().optional(),
+            sku: z.string().optional(),
             barcode: z.string().optional(),
-            modelNum: z.string().optional(),
-            published: z.boolean(),
-            colors: z.nativeEnum(ProductColor).array().optional(),
-            detailedColors: z.string().array(),
-            size: z.string(),
-            description: z.string().optional(),
-            stock: z.number(),
             price: z.number(),
+            compareAtPrice: z.number().optional(),
+            taxable: z.boolean(),
+            stock: z.number(),
+            color: z.string(),
+            size: z.string(),
           })
-        ),
-        modelId: z.number(),
-        types: z.nativeEnum(CollectionType).array(),
-        collectionId: z.number(),
-        // rate: z.number(),
-        // published: z.boolean(),
-        // colors: z.nativeEnum(ProductColor).array().optional(),
-        // sizes: z.nativeEnum(ProductSize).array(),
+          .array(),
       })
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.product.create({
         data: {
-          name: input.name,
+          title: input.title,
           description: input.description,
+          status: input.status,
+          vendor: input.vendor
+            ? {
+                connectOrCreate: {
+                  where: { name: input.vendor },
+                  create: { name: input.vendor },
+                },
+              }
+            : undefined,
+          collections: {
+            connect: input.collections.map((collectionId) => {
+              return { id: +collectionId };
+            }),
+          },
+          productType: input.productType
+            ? {
+                connectOrCreate: {
+                  where: { name: input.productType },
+                  create: { name: input.productType },
+                },
+              }
+            : undefined,
+          tags: {
+            connect: input.tags.map((tag) => {
+              return { name: tag };
+            }),
+          },
+          images: {
+            connectOrCreate: input.images.map((imageUrl) => {
+              return {
+                where: { url: imageUrl },
+                create: { url: imageUrl },
+              };
+            }),
+          },
+
           variants: {
-            createMany: {
-              data: input.variants.map((variant) => {
-                return {
-                  barcode: variant.barcode,
-                  modelNum: variant.modelNum,
-                  published: variant.published,
-                  colors: variant.colors,
-                  detailedColors: variant.detailedColors,
-                  size: variant.size,
-                  description: variant.description,
-                  stock: variant.stock,
-                  price: variant.price,
-                };
-              }),
-            },
+            create: input.variants.map((variant) => variant),
           },
-          model: {
-            connect: {
-              id: input.modelId,
-            },
+        },
+      });
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        title: z.string(),
+        description: z.string().optional(),
+        status: z.string(),
+        collections: z.string().array(),
+        vendor: z.string().optional(),
+        productType: z.string().optional(),
+        tags: z.string().array(),
+        images: z.string().array(),
+        variants: z
+          .object({
+            title: z.string().optional(),
+            sku: z.string().optional(),
+            barcode: z.string().optional(),
+            price: z.number(),
+            compareAtPrice: z.number().nullable(),
+            taxable: z.boolean(),
+            stock: z.number(),
+            color: z.string(),
+            size: z.string(),
+          })
+          .array(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.product.update({
+        where: { id: input.id },
+        data: {
+          title: input.title,
+          description: input.description,
+          status: input.status,
+          vendor: input.vendor
+            ? {
+                connectOrCreate: {
+                  where: { name: input.vendor },
+                  create: { name: input.vendor },
+                },
+              }
+            : undefined,
+          collections: {
+            connect: input.collections.map((collectionId) => {
+              return { id: +collectionId };
+            }),
           },
-          collection: {
-            connect: {
-              id: input.collectionId,
-            },
+          productType: input.productType
+            ? {
+                connectOrCreate: {
+                  where: { name: input.productType },
+                  create: { name: input.productType },
+                },
+              }
+            : undefined,
+          tags: {
+            connect: input.tags.map((tag) => {
+              return { name: tag };
+            }),
           },
-          types: input.types,
+          images: {
+            connectOrCreate: input.images.map((imageUrl) => {
+              return {
+                where: { url: imageUrl },
+                create: { url: imageUrl },
+              };
+            }),
+          },
+
+          variants: {
+            create: input.variants.map((variant) => variant),
+          },
         },
       });
     }),

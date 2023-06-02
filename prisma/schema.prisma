@@ -33,9 +33,9 @@ model Collection {
 
 model ProductImage {
     id        Int      @id @default(autoincrement())
-    url       String
-    productId Int
-    product   Product  @relation(fields: [productId], references: [id])
+    url       String   @unique
+    productId Int?
+    product   Product? @relation(fields: [productId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
@@ -49,9 +49,9 @@ model Product {
     description   String?
     status        String           @default("active")
     collections   Collection[]     @relation("CollectionProducts")
-    Vendor        Vendor?          @relation(fields: [vendorId], references: [id])
+    vendor        Vendor?          @relation(fields: [vendorId], references: [id])
     vendorId      Int?
-    ProductType   ProductType?     @relation(fields: [productTypeId], references: [id])
+    productType   ProductType?     @relation(fields: [productTypeId], references: [id])
     productTypeId Int?
     tags          ProductTag[]
     images        ProductImage[]
@@ -66,8 +66,8 @@ model ProductVariant {
     title          String?
     sku            String?
     barcode        String?
-    price          Decimal  @default(0)
-    compareAtPrice Decimal?
+    price          Float    @default(0)
+    compareAtPrice Float?
     taxable        Boolean  @default(true)
     stock          Int      @default(0)
     color          String?

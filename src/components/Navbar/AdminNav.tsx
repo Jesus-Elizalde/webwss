@@ -46,6 +46,12 @@ const AdminNav = ({ children }: Props) => {
             </Link>
           </li>
           <li>
+            <Link href="/admin/collections">
+              <MdOutlineInventory2 />
+              Collections
+            </Link>
+          </li>
+          <li>
             <Link href="/admin/settings">
               <MdOutlineSettings />
               Settings
