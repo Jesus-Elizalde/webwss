@@ -6,15 +6,15 @@ import { api } from "~/utils/api";
 import { getCategoryFromPath } from "~/utils/getCategory";
 
 const FootwearPage = () => {
-  const { asPath: path } = useRouter();
-  const { data: products, isLoading: loading } =
-    api.product.getByCategory.useQuery({
-      category: getCategoryFromPath(path),
-    });
+  // const { asPath: path } = useRouter();
+  // const { data: products, isLoading: loading } =
+  //   api.product.getByCategory.useQuery({
+  //     category: getCategoryFromPath(path),
+  //   });
 
   return (
     <div>
-      <div className="grid min-h-screen max-[640px]:grid-cols-2 max-[640px]:gap-x-2 max-[640px]:gap-y-2 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4">
+      {/* <div className="grid min-h-screen max-[640px]:grid-cols-2 max-[640px]:gap-x-2 max-[640px]:gap-y-2 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-4">
         {loading ? (
           <>
             <LoadingMainCard />
@@ -29,7 +29,8 @@ const FootwearPage = () => {
             <MainCard product={product} key={product.id} />
           ))
         )}
-      </div>
+      </div> */}
+      footwear
     </div>
   );
 };

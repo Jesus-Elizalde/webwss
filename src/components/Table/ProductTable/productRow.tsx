@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import Modal from "~/components/Modal";
@@ -29,19 +30,18 @@ const ProductRow = ({ product, idx }: Props) => {
   return (
     <tr key={product.id}>
       <th>{idx + 1}</th>
-      <td>{product.name}</td>
-      <td>{product.stock}</td>
-      <td>{product.price}</td>
-      <td>{product.brand}</td>
-      <td>{product.model}</td>
-      <td>{product.color}</td>
+      <td>
+        <Link href={`/admin/inventory/${product.id}`}>{product.title}</Link>
+      </td>
+      <td>{product.variants[0]?.price}</td>
+      <td>{product.variants[0]?.price}</td>
       <td>
         <span onClick={handleToggleDelete}>
           <IoMdTrash />
         </span>
         <Modal open={openDeleteModal}>
           <div>Are you sure you want to delete:</div>
-          <div>{product.name}</div>
+          <div>{product.title}</div>
           <div className="btn-error btn" onClick={() => handleToggleDelete()}>
             Close
           </div>
