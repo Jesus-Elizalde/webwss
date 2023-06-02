@@ -14,18 +14,18 @@ const Card = ({ product }: Props) => {
       <figure className="h-[375.99px] lg:h-[400px]">
         {product?.images[0] && (
           <Image
-            src={product.images[0]}
-            alt={product.name}
+            src={product.images[0].url}
+            alt={product.title}
             width={312}
             height={400}
           />
         )}
       </figure>
       <div className="card-body">
-        <h1 className="card-title ">{product.name}</h1>
+        <h1 className="card-title ">{product.title}</h1>
         <div className="flex">
-          <p>{product.brand}</p>
-          <p>${product.price}.00</p>
+          <p>{product.vendor?.name}</p>
+          <p>${product.variants[0]?.price}.00</p>
         </div>
       </div>
     </div>
