@@ -31,17 +31,17 @@ const ProductRow = ({ product, idx }: Props) => {
     <tr key={product.id}>
       <th>{idx + 1}</th>
       <td>
-        <Link href={`/admin/inventory/${product.id}`}>{product.name}</Link>
+        <Link href={`/admin/inventory/${product.id}`}>{product.title}</Link>
       </td>
-      <td>{product.price}</td>
-      <td>{product.price}</td>
+      <td>{product.variants[0]?.price}</td>
+      <td>{product.variants[0]?.price}</td>
       <td>
         <span onClick={handleToggleDelete}>
           <IoMdTrash />
         </span>
         <Modal open={openDeleteModal}>
           <div>Are you sure you want to delete:</div>
-          <div>{product.name}</div>
+          <div>{product.title}</div>
           <div className="btn-error btn" onClick={() => handleToggleDelete()}>
             Close
           </div>
