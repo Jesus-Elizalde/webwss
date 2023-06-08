@@ -1,7 +1,8 @@
 import { type NextPage } from "next";
+import FeaturedCarousel from "~/components/Card/featuredCarousel";
 
 import Hero from "~/components/Hero";
-import FeaturedCarousel from "~/components/Card/featured";
+
 import MediaHero from "~/components/Hero/MediaHero";
 
 const Home: NextPage = () => {

@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { Role } from "@prisma/client";
 
 type Props = {
   children: React.ReactElement;
@@ -17,8 +18,8 @@ type Props = {
 export const ProtectedAdminLayout = ({ children }: Props): JSX.Element => {
   const router = useRouter();
   const { data: sessionDate, status: sessionStatus } = useSession();
-  const authorized = sessionDate?.user.role === "admin";
-  const unAuthorized = sessionDate?.user.role !== "admin";
+  const authorized = sessionDate?.user.role === Role.ADMIN;
+  const unAuthorized = sessionDate?.user.role !== Role.ADMIN;
   const loading = sessionStatus === "loading";
 
   useEffect(() => {

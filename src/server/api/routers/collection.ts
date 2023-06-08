@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
@@ -11,7 +11,22 @@ export const defaultCollectionSelect =
     products: {
       select: {
         id: true,
-        title: true,
+        name: true,
+      },
+    },
+  });
+
+export const featuredCollectionSelect =
+  Prisma.validator<Prisma.CollectionSelect>()({
+    products: {
+      select: {
+        name: true,
+        productVariant: {
+          select: {
+            name: true,
+            images: true,
+          },
+        },
       },
     },
   });
@@ -22,6 +37,20 @@ export const collectionRouter = createTRPCRouter({
       select: defaultCollectionSelect,
     });
   }),
+  getOneFiltered: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      const { name } = input;
+      return ctx.prisma.collection.findUnique({
+        where: {
+          name,
+        },
+      });
+    }),
 
   create: protectedProcedure
     .input(
@@ -44,7 +73,7 @@ export const collectionRouter = createTRPCRouter({
   update: protectedProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string(),
         description: z.string().optional().nullable(),
         slug: z.string(),
@@ -66,7 +95,7 @@ export const collectionRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       const { id } = input;
       return ctx.prisma.collection.findUnique({
-        where: { id: +id },
+        where: { id: id },
         select: defaultCollectionSelect,
       });
     }),
@@ -76,7 +105,7 @@ export const collectionRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.collection.delete({
         where: {
-          id: +input.id,
+          id: input.id,
         },
       });
     }),

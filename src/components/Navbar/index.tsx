@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FiSearch, FiUser } from "react-icons/fi";
+import { Role } from "@prisma/client";
 
 const NavBar = () => {
   const { data: sessionData } = useSession();
@@ -46,7 +47,7 @@ const NavBar = () => {
                     <span className="badge">New</span>
                   </a>
                 </li> */}
-                {sessionData?.user.role === "admin" && (
+                {sessionData?.user.role === Role.ADMIN && (
                   <li>
                     <Link href="/admin/dashboard">Admin Page</Link>
                   </li>
