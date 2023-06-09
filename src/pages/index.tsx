@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import FeaturedCarousel from "~/components/Card/featuredCarousel";
+import FeaturedCarousel from "~/components/Card/FeaturedCarousel";
 
 import Hero from "~/components/Hero";
 

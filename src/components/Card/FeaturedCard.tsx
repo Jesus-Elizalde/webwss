@@ -1,17 +1,23 @@
+import Image from "next/image";
 import React from "react";
 
-const FeaturedCard = () => {
+type Props = {
+  name: string;
+  type: string;
+  price: number;
+  vendor: string;
+  url: string;
+};
+
+const FeaturedCard = ({ name, type, price, vendor, url }: Props) => {
   return (
     <div className="card-compact card w-96 bg-base-100 shadow-xl">
       <figure>
-        <img
-          src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/zoom-mercurial-vapor-15-elite-xxv-fg-firm-ground-soccer-cleats-NLZxDR.jpeg"
-          alt="Shoes"
-        />
+        <Image src={url} alt={name} height={100} width={100} />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">Shoes!</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
+        <h2 className="card-title">{name}</h2>
+        <p>{type}</p>
         <div className="card-actions justify-end">
           <button className="btn-primary btn">Buy Now</button>
         </div>
