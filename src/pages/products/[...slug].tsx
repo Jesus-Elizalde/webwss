@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo } from "react";
-import LoadingMainCard from "~/components/Card/LoadingMainCard";
-import MainCard from "~/components/Card/MainCard";
+// import LoadingMainCard from "~/components/Card/LoadingMainCard";
+// import MainCard from "~/components/Card/MainCard";
 import { api } from "~/utils/api";
 
 const ProductsPage = () => {

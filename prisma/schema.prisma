@@ -72,7 +72,7 @@ model Product {
     updatedAt   DateTime         @updatedAt
     name        String
     description String?
-    type        String?
+    type        String
     price       Float
     collections Collection[]     @relation("CollectionProducts")
     status      Status           @default(ACTIVE)

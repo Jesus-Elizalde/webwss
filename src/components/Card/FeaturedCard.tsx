@@ -1,28 +1,33 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
+import { featuredCard } from "~/types";
 
-type Props = {
-  name: string;
-  type: string;
-  price: number;
-  vendor: string;
-  url: string;
-};
-
-const FeaturedCard = ({ name, type, price, vendor, url }: Props) => {
+const FeaturedCard = ({ name, type, price, vendor, url }: featuredCard) => {
   return (
-    <div className="card-compact card w-96 bg-base-100 shadow-xl">
-      <figure>
-        <Image src={url} alt={name} height={100} width={100} />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">{name}</h2>
-        <p>{type}</p>
-        <div className="card-actions justify-end">
-          <button className="btn-primary btn">Buy Now</button>
+    <Link href={`/products`} className="carousel-item">
+      <div className="card card-normal min-h-[300px] min-w-[300px] bg-base-100">
+        <figure>
+          <Image
+            src={
+              url ||
+              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+            }
+            alt={name}
+            height={375}
+            width={375}
+            className="object-contain"
+          />
+        </figure>
+        <div className=" mr-4 mt-3 flex flex-col">
+          <div className="flex justify-between">
+            <h2 className="font-bold">{name}</h2>
+            <p className="text-info-content">{`$${price}`}</p>
+          </div>
+          <p className="text-sm text-info-content">{type}</p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

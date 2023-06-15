@@ -83,6 +83,11 @@ export const productRouter = createTRPCRouter({
                   },
                 },
               },
+              images: {
+                select: {
+                  url: true,
+                },
+              },
             },
           },
         },
