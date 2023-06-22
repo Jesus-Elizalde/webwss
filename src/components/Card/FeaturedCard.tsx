@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { featuredCard } from "~/types";
+import { type featuredCard } from "~/types";
 
-const FeaturedCard = ({ name, type, price, vendor, url }: featuredCard) => {
+const FeaturedCard = ({ id, name, type, price, vendor, url }: featuredCard) => {
   return (
-    <Link href={`/products`} className="carousel-item">
+    <Link href={`/products/${id}`} className="carousel-item">
       <div className="card card-normal min-h-[300px] min-w-[300px] bg-base-100">
         <figure>
           <Image
@@ -25,6 +25,7 @@ const FeaturedCard = ({ name, type, price, vendor, url }: featuredCard) => {
             <p className="text-info-content">{`$${price}`}</p>
           </div>
           <p className="text-sm text-info-content">{type}</p>
+          <p className="text-sm text-info-content">{vendor}</p>
         </div>
       </div>
     </Link>

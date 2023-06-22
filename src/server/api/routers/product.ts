@@ -1,18 +1,18 @@
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
-import { publicProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
+import { Color } from "@prisma/client";
+import { publicProcedure, createTRPCRouter } from "../trpc";
 
-const filteredProductSelect = Prisma.validator<Prisma.ProductSelect>()({
-  name: true,
-  price: true,
-  variants: {
-    select: {
-      name: true,
-      price: true,
-      sizes: true,
-    },
-  },
-});
+// const filteredProductSelect = Prisma.validator<Prisma.ProductSelect>()({
+//   name: true,
+//   price: true,
+//   variants: {
+//     select: {
+//       name: true,
+//       price: true,
+//       sizes: true,
+//     },
+//   },
+// });
 
 // const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
 //   id: true,
@@ -41,6 +41,61 @@ const filteredProductSelect = Prisma.validator<Prisma.ProductSelect>()({
 // });
 
 export const productRouter = createTRPCRouter({
+  getMany: publicProcedure
+    .input(
+      z.object({
+        name: z.string().optional(),
+        colors: z.nativeEnum(Color).array().optional(),
+        sizes: z.string().array().optional(),
+        types: z.string().array().optional(),
+        gte: z.number().optional(),
+        lte: z.number().optional(),
+        vendors: z.string().array().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { name, colors = [], sizes, types, gte, lte, vendors } = input;
+
+      return ctx.prisma.product.findMany({
+        where: {
+          collections: {
+            some: {
+              slug: name,
+            },
+          },
+          status: "ACTIVE",
+          variants: {
+            some: {
+              generalColor: sizes ? { hasSome: colors } : undefined,
+              sizes: {
+                some: {
+                  size: sizes
+                    ? { in: sizes.map((size) => size.toUpperCase()) }
+                    : undefined,
+                },
+              },
+            },
+          },
+          type: types
+            ? { in: types.map((type) => type.toUpperCase()) }
+            : undefined,
+          price: {
+            gte: gte ? gte : undefined,
+            lte: lte ? lte : undefined,
+          },
+          vendor: vendors ? { name: { in: vendors } } : undefined,
+        },
+        include: {
+          variants: {
+            include: {
+              sizes: true,
+              images: true,
+            },
+          },
+        },
+      });
+    }),
+
   getfiltered: publicProcedure
     .input(z.object({ collectionName: z.string() }))
     .query(async ({ ctx, input }) => {

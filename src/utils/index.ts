@@ -1,4 +1,4 @@
-import { FilteredProduct } from "~/types";
+import { type FilteredProduct } from "~/types";
 
 export const getImageUrlFromProduct = (product: FilteredProduct) => {
   const variantsIdx = Math.floor(Math.random() * product.variants.length);

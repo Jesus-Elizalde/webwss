@@ -1,6 +1,6 @@
 import React from "react";
 import FeaturedCard from "./FeaturedCard";
-import { RouterOutputs, api } from "~/utils/api";
+import { api } from "~/utils/api";
 import { getImageUrlFromProduct } from "~/utils";
 
 const FeaturedCarousel = () => {
@@ -15,12 +15,13 @@ const FeaturedCarousel = () => {
   return (
     <div className="carousel w-full space-x-4 p-4">
       {products?.map((product) => (
-        <div className="carousel-item">
+        <div className="carousel-item" key={product.id}>
           <FeaturedCard
+            id={product.id}
             name={product.name}
             price={product.price}
             type={product.type}
-            vendor={product.name}
+            vendor={"vendor"}
             url={getImageUrlFromProduct(product)}
           />
         </div>
