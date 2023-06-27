@@ -6,8 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 
 const InventoryPage = () => {
-  const { data: products } = api.product.getAll.useQuery();
-  console.log("🚀 ~ file: index.tsx:9 ~ InventoryPage ~ products:", products);
+  const { data: products } = api.product.getAllAdmin.useQuery();
+  console.log("🚀 ~ file: index.tsx:10 ~ InventoryPage ~ products:", products);
+
   return (
     <ProtectedAdminLayout>
       <div className="flex flex-col">
@@ -73,13 +74,13 @@ const InventoryPage = () => {
                   </th>
                   <td>
                     <Link href={`/admin/products/${product.id}`}>
-                      {product.title}
+                      {product.name}
                     </Link>
                   </td>
                   <td>
                     <span
                       className={`badge ${
-                        product.status === "Active"
+                        product.status === "ACTIVE"
                           ? "badge-success"
                           : "badge-info"
                       }`}
@@ -88,8 +89,8 @@ const InventoryPage = () => {
                     </span>
                   </td>
                   <td>TBD in stock for {product.variants.length} variants</td>
-                  <td>{product.productType?.name}</td>
-                  <td>{product.vendor ? product.vendor.name : ""}</td>
+                  <td>{product.type}</td>
+                  <td>{product.vendor?.name ? product.vendor.name : ""}</td>
                 </tr>
               ))}
             </tbody>
