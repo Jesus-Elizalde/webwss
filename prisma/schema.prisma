@@ -93,6 +93,7 @@ model ProductVariant {
     images        ProductImage[]
     status        Status         @default(ACTIVE)
     tags          ProductTag[]
+    attribute     String
     Product       Product?       @relation(fields: [productId], references: [id])
     productId     String?
     sizes         ProductSize[]

@@ -140,6 +140,7 @@ export const productRouter = createTRPCRouter({
         vendor: z.string(),
         type: z.string(),
         price: z.number(),
+        collection: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -150,6 +151,7 @@ export const productRouter = createTRPCRouter({
           status: "ACTIVE",
           type: input.type,
           price: input.price,
+          collections: { connect: { name: input.collection } },
           vendor: {
             connectOrCreate: {
               where: { name: input.vendor },

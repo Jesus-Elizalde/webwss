@@ -14,10 +14,14 @@ const productSchema = Yup.object().shape({
   type: Yup.string().required(),
   price: Yup.number().required(),
   vendor: Yup.string().required(),
+  collection: Yup.string().required(),
 });
 
 const NewProduct = () => {
   const router = useRouter();
+
+  const { data: vendors } = api.vendor.getAll.useQuery();
+  const { data: collections } = api.collection.getAll.useQuery();
 
   const initValues: Yup.InferType<typeof productSchema> = {
     title: "",
@@ -25,6 +29,7 @@ const NewProduct = () => {
     type: "",
     price: 0,
     vendor: "",
+    collection: "",
   };
 
   const createProduct = api.product.create.useMutation({
@@ -55,6 +60,7 @@ const NewProduct = () => {
               price: values.price,
               vendor: values.vendor,
               status: "ACTIVE",
+              collection: values.collection,
             });
           }}
         >
@@ -125,10 +131,29 @@ const NewProduct = () => {
                   </div>
                   <div className="form-control w-full">
                     <label className="label">
+                      <span className="label-text">Collection:</span>
+                    </label>
+                    <div className="">
+                      <ComboBox
+                        label=""
+                        name="collection"
+                        options={
+                          collections?.map((collections) => collections.name) ||
+                          []
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="form-control w-full">
+                    <label className="label">
                       <span className="label-text">Vendor:</span>
                     </label>
                     <div className="">
-                      <ComboBox label="" name="vendor" options={[]} />
+                      <ComboBox
+                        label=""
+                        name="vendor"
+                        options={vendors?.map((vendor) => vendor.name) || []}
+                      />
                     </div>
                   </div>
                 </div>
