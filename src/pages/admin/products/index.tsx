@@ -63,7 +63,10 @@ const InventoryPage = () => {
                       <div className="avatar">
                         <div className="mask mask-squircle h-12 w-12">
                           <Image
-                            src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+                            src={
+                              product.variants[0]?.images[0]?.url ||
+                              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+                            }
                             alt="Avatar Tailwind CSS Component"
                             width={96}
                             height={120}
