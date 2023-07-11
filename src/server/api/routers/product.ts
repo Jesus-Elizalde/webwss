@@ -20,7 +20,7 @@ export const productRouter = createTRPCRouter({
   getMany: publicProcedure
     .input(
       z.object({
-        name: z.string().optional(),
+        slug: z.string().optional(),
         colors: z.nativeEnum(Color).array().optional(),
         sizes: z.string().array().optional(),
         types: z.string().array().optional(),
@@ -30,13 +30,13 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { name, colors = [], sizes, types, gte, lte, vendors } = input;
+      const { slug, colors = [], sizes, types, gte, lte, vendors } = input;
 
       return ctx.prisma.product.findMany({
         where: {
           collections: {
             some: {
-              slug: name,
+              slug: slug,
             },
           },
           status: "ACTIVE",

@@ -7,8 +7,6 @@ import Image from "next/image";
 
 const InventoryPage = () => {
   const { data: products } = api.product.getAllAdmin.useQuery();
-  console.log("🚀 ~ file: index.tsx:10 ~ InventoryPage ~ products:", products);
-
   return (
     <ProtectedAdminLayout>
       <div className="flex flex-col">

@@ -3,7 +3,7 @@
 // import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-// import { api } from "~/utils/api";
+import { api } from "~/utils/api";
 
 const CollectionPage = () => {
   const router = useRouter();
@@ -12,9 +12,13 @@ const CollectionPage = () => {
   };
   console.log("🚀 ~ file: [slug].tsx:11 ~ CollectionPage ~ slug:", slug);
 
-  // const { data: products } = api.product.getMany.useQuery({
-  //   name: slug,
-  // });
+  const { data: products } = api.product.getMany.useQuery({
+    slug,
+  });
+  console.log(
+    "🚀 ~ file: [slug].tsx:18 ~ CollectionPage ~ products:",
+    products
+  );
 
   return <div></div>;
 };
