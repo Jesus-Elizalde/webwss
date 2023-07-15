@@ -64,6 +64,7 @@ model ProductImage {
     updatedAt        DateTime        @updatedAt
     ProductVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
     productVariantId String?
+    order            Int             @unique
 }
 
 model Product {
