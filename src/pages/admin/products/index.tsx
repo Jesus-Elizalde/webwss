@@ -6,8 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 const InventoryPage = () => {
-  const { data: products } = api.product.getAll.useQuery();
-  console.log("🚀 ~ file: index.tsx:9 ~ InventoryPage ~ products:", products);
+  const { data: products } = api.product.getAllAdmin.useQuery();
   return (
     <ProtectedAdminLayout>
       <div className="flex flex-col">
@@ -62,7 +61,10 @@ const InventoryPage = () => {
                       <div className="avatar">
                         <div className="mask mask-squircle h-12 w-12">
                           <Image
-                            src="https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+                            src={
+                              product.variants[0]?.images[0]?.url ||
+                              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+                            }
                             alt="Avatar Tailwind CSS Component"
                             width={96}
                             height={120}
@@ -73,13 +75,13 @@ const InventoryPage = () => {
                   </th>
                   <td>
                     <Link href={`/admin/products/${product.id}`}>
-                      {product.title}
+                      {product.name}
                     </Link>
                   </td>
                   <td>
                     <span
                       className={`badge ${
-                        product.status === "Active"
+                        product.status === "ACTIVE"
                           ? "badge-success"
                           : "badge-info"
                       }`}
@@ -88,8 +90,8 @@ const InventoryPage = () => {
                     </span>
                   </td>
                   <td>TBD in stock for {product.variants.length} variants</td>
-                  <td>{product.productType?.name}</td>
-                  <td>{product.vendor ? product.vendor.name : ""}</td>
+                  <td>{product.type}</td>
+                  <td>{product.vendor?.name ? product.vendor.name : ""}</td>
                 </tr>
               ))}
             </tbody>

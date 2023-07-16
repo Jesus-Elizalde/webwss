@@ -1,59 +1,135 @@
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import { Color } from "@prisma/client";
 import { publicProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 
-const defaultProductSelect = Prisma.validator<Prisma.ProductSelect>()({
-  id: true,
-  title: true,
-  description: true,
-  status: true,
-  tags: true,
-  images: true,
-  variants: true,
-  vendor: {
-    select: {
-      name: true,
-    },
-  },
-  productType: {
-    select: {
-      name: true,
-    },
-  },
-  collections: {
-    select: {
-      id: true,
-      name: true,
-    },
-  },
-});
-
 export const productRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.product.findMany({
-      orderBy: [{ createdAt: "desc" }],
-      select: defaultProductSelect,
+      include: {
+        vendor: true,
+        variants: {
+          include: {
+            sizes: true,
+            images: true,
+          },
+        },
+      },
     });
   }),
 
-  getOne: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      const { id } = input;
-      return ctx.prisma.product.findUnique({
-        where: { id: +id },
-        select: defaultProductSelect,
+  getMany: publicProcedure
+    .input(
+      z.object({
+        slug: z.string().optional(),
+        colors: z.nativeEnum(Color).array().optional(),
+        sizes: z.string().array().optional(),
+        types: z.string().array().optional(),
+        gte: z.number().optional(),
+        lte: z.number().optional(),
+        vendors: z.string().array().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { slug, colors = [], sizes, types, gte, lte, vendors } = input;
+
+      return ctx.prisma.product.findMany({
+        where: {
+          collections: {
+            some: {
+              slug: slug,
+            },
+          },
+          status: "ACTIVE",
+          variants: {
+            some: {
+              generalColor: sizes ? { hasSome: colors } : undefined,
+              sizes: {
+                some: {
+                  size: sizes
+                    ? { in: sizes.map((size) => size.toUpperCase()) }
+                    : undefined,
+                },
+              },
+            },
+          },
+          type: types
+            ? { in: types.map((type) => type.toUpperCase()) }
+            : undefined,
+          price: {
+            gte: gte ? gte : undefined,
+            lte: lte ? lte : undefined,
+          },
+          vendor: vendors ? { name: { in: vendors } } : undefined,
+        },
+        include: {
+          vendor: true,
+          variants: {
+            include: {
+              sizes: true,
+              images: true,
+            },
+          },
+        },
       });
     }),
 
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.product.delete({
+  getfiltered: publicProcedure
+    .input(z.object({ collectionName: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { collectionName: name } = input;
+      const products = await ctx.prisma.product.findMany({
         where: {
-          id: +input.id,
+          collections: {
+            some: {
+              name,
+            },
+          },
+          variants: {
+            some: {
+              sizes: {
+                some: {
+                  stockOnline: {
+                    gt: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+        include: {
+          variants: {
+            where: {
+              sizes: {
+                some: {
+                  stockOnline: {
+                    gt: 0,
+                  },
+                },
+              },
+            },
+            include: {
+              sizes: {
+                where: {
+                  stockOnline: {
+                    gt: 0,
+                  },
+                },
+              },
+              images: {
+                select: {
+                  url: true,
+                },
+              },
+            },
+          },
         },
       });
+
+      const filteredProducts = products.filter((product) =>
+        product.variants.some((variant) => variant.sizes.length > 0)
+      );
+
+      return filteredProducts;
     }),
 
   create: protectedProcedure
@@ -62,145 +138,26 @@ export const productRouter = createTRPCRouter({
         title: z.string(),
         description: z.string().optional(),
         status: z.string(),
-        collections: z.string().array(),
-        vendor: z.string().optional(),
-        productType: z.string().optional(),
-        tags: z.string().array(),
-        images: z.string().array(),
-        variants: z
-          .object({
-            title: z.string().optional(),
-            sku: z.string().optional(),
-            barcode: z.string().optional(),
-            price: z.number(),
-            compareAtPrice: z.number().optional(),
-            taxable: z.boolean(),
-            stock: z.number(),
-            color: z.string(),
-            size: z.string(),
-          })
-          .array(),
+        vendor: z.string(),
+        type: z.string(),
+        price: z.number(),
+        collection: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
       return ctx.prisma.product.create({
         data: {
-          title: input.title,
+          name: input.title,
           description: input.description,
-          status: input.status,
-          vendor: input.vendor
-            ? {
-                connectOrCreate: {
-                  where: { name: input.vendor },
-                  create: { name: input.vendor },
-                },
-              }
-            : undefined,
-          collections: {
-            connect: input.collections.map((collectionId) => {
-              return { id: +collectionId };
-            }),
-          },
-          productType: input.productType
-            ? {
-                connectOrCreate: {
-                  where: { name: input.productType },
-                  create: { name: input.productType },
-                },
-              }
-            : undefined,
-          tags: {
-            connect: input.tags.map((tag) => {
-              return { name: tag };
-            }),
-          },
-          images: {
-            connectOrCreate: input.images.map((imageUrl) => {
-              return {
-                where: { url: imageUrl },
-                create: { url: imageUrl },
-              };
-            }),
-          },
-
-          variants: {
-            create: input.variants.map((variant) => variant),
-          },
-        },
-      });
-    }),
-
-  update: protectedProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        title: z.string(),
-        description: z.string().optional(),
-        status: z.string(),
-        collections: z.string().array(),
-        vendor: z.string().optional(),
-        productType: z.string().optional(),
-        tags: z.string().array(),
-        images: z.string().array(),
-        variants: z
-          .object({
-            title: z.string().optional(),
-            sku: z.string().optional(),
-            barcode: z.string().optional(),
-            price: z.number(),
-            compareAtPrice: z.number().nullable(),
-            taxable: z.boolean(),
-            stock: z.number(),
-            color: z.string(),
-            size: z.string(),
-          })
-          .array(),
-      })
-    )
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.product.update({
-        where: { id: input.id },
-        data: {
-          title: input.title,
-          description: input.description,
-          status: input.status,
-          vendor: input.vendor
-            ? {
-                connectOrCreate: {
-                  where: { name: input.vendor },
-                  create: { name: input.vendor },
-                },
-              }
-            : undefined,
-          collections: {
-            connect: input.collections.map((collectionId) => {
-              return { id: +collectionId };
-            }),
-          },
-          productType: input.productType
-            ? {
-                connectOrCreate: {
-                  where: { name: input.productType },
-                  create: { name: input.productType },
-                },
-              }
-            : undefined,
-          tags: {
-            connect: input.tags.map((tag) => {
-              return { name: tag };
-            }),
-          },
-          images: {
-            connectOrCreate: input.images.map((imageUrl) => {
-              return {
-                where: { url: imageUrl },
-                create: { url: imageUrl },
-              };
-            }),
-          },
-
-          variants: {
-            create: input.variants.map((variant) => variant),
+          status: "ACTIVE",
+          type: input.type,
+          price: input.price,
+          collections: { connect: { name: input.collection } },
+          vendor: {
+            connectOrCreate: {
+              where: { name: input.vendor },
+              create: { name: input.vendor },
+            },
           },
         },
       });

@@ -1,34 +1,38 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
-import type { RouterOutputs } from "~/utils/api";
+import { type RouterOutputs } from "~/utils/api";
 
-type Product = RouterOutputs["product"]["getAll"][0];
+type ProductType = RouterOutputs["product"]["getMany"][0];
 
-type Props = {
-  product: Product;
-};
-
-const MainCard = ({ product }: Props) => {
+const MainCard = ({ id, name, variants, price, type, vendor }: ProductType) => {
   return (
-    <div className="card">
-      <figure className="h-[238px] lg:min-h-[653px]">
-        {product?.images[0] && (
+    <Link href={`/products/${id}`} className="" key={id}>
+      <div className="card card-normal">
+        <figure>
           <Image
-            src={product.images[0].url}
-            alt={product.title}
-            width={522}
-            height={653}
+            src={
+              variants[0]?.images[0]?.url ||
+              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+            }
+            alt={name}
+            height={375}
+            width={375}
+            className="aspect-square h-full w-full object-cover"
           />
-        )}
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">{product.title}</h2>
-        <div className="flex">
-          <p>{product.vendor?.name}</p>
-          <p>${product.variants[0]?.price}.00</p>
+        </figure>
+        <div className=" my-3 mr-4 flex flex-col">
+          <div className="flex justify-between">
+            <h2 className="font-bold">{name}</h2>
+            <p className="text-info-content">{`$${price}`}</p>
+          </div>
+          <div className="flex justify-between">
+            <p className="text-sm text-info-content">{type}</p>
+            <p className="text-sm text-info-content">{vendor && vendor.name}</p>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

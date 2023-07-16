@@ -1,9 +1,9 @@
 import { type ReactNode } from "react";
 
 import { useRouter } from "next/router";
-import NavBar from "../Navbar";
 import AdminNav from "../Navbar/AdminNav";
 import Footer from "../Footer";
+import NavBar from "../Navbar";
 
 type Props = {
   children: ReactNode;

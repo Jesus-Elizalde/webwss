@@ -31,9 +31,9 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 //     },
 //   });
 
-export const collectionRouter = createTRPCRouter({
+export const vendorRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.collection.findMany({});
+    return ctx.prisma.vendor.findMany({});
   }),
   // getOneFiltered: publicProcedure
   //   .input(
