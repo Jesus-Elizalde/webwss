@@ -9,10 +9,7 @@ const FeaturedCard = ({ id, name, type, price, vendor, url }: featuredCard) => {
       <div className="card card-normal min-h-[300px] min-w-[300px] bg-base-100">
         <figure>
           <Image
-            src={
-              url ||
-              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
-            }
+            src={url || "/imagenotfound.svg"}
             alt={name}
             height={375}
             width={375}

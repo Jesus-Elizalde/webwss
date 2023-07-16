@@ -63,7 +63,7 @@ const InventoryPage = () => {
                           <Image
                             src={
                               product.variants[0]?.images[0]?.url ||
-                              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
+                              "/imagenotfound.svg"
                             }
                             alt="Avatar Tailwind CSS Component"
                             width={96}

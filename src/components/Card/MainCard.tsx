@@ -11,10 +11,7 @@ const MainCard = ({ id, name, variants, price, type, vendor }: ProductType) => {
       <div className="card card-normal">
         <figure>
           <Image
-            src={
-              variants[0]?.images[0]?.url ||
-              "https://kiiaaunaenthemzngrew.supabase.co/storage/v1/object/public/wss.assests/notfoundimg.jpg"
-            }
+            src={variants[0]?.images[0]?.url || "/imagenotfound.svg"}
             alt={name}
             height={375}
             width={375}
