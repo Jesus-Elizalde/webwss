@@ -25,7 +25,7 @@ const ComboBox = ({ name, label, options }: ComboBoxProps) => {
 
   return (
     <Combobox
-      value={field.value}
+      value={field.value as string}
       onChange={(value) => {
         field.onChange({ target: { value, name } });
       }}
