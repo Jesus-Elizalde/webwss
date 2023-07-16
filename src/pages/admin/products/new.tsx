@@ -1,8 +1,9 @@
-import { Combobox, Transition } from "@headlessui/react";
+// import { Combobox, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import React, { Fragment, useState } from "react";
+import React from "react";
+// import React, { Fragment, useState } from "react";
 import { ProtectedAdminLayout } from "~/components/Layouts/protectedAdminLayout";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+// import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { api } from "~/utils/api";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -51,7 +52,7 @@ const NewProduct = () => {
         <Formik
           initialValues={initValues}
           validationSchema={productSchema}
-          onSubmit={(values, actions) => {
+          onSubmit={(values) => {
             console.log(values);
             createProduct.mutate({
               title: values.title,
@@ -64,14 +65,7 @@ const NewProduct = () => {
             });
           }}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleSubmit,
-            handleChange,
-            handleBlur,
-          }) => {
+          {({ values, errors, handleChange, handleBlur }) => {
             return (
               <Form>
                 <div className="card-bordered card bg-base-200 p-2">

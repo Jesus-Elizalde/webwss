@@ -9,7 +9,7 @@ type ComboBoxProps = {
   options: string[];
 };
 
-const ComboBox = ({ name, label, options }: ComboBoxProps) => {
+const ComboBox = ({ name, options }: ComboBoxProps) => {
   const [field] = useField({ name });
   const [query, setQuery] = useState("");
 
