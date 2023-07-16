@@ -62,6 +62,7 @@ export const productRouter = createTRPCRouter({
           vendor: vendors ? { name: { in: vendors } } : undefined,
         },
         include: {
+          vendor: true,
           variants: {
             include: {
               sizes: true,
