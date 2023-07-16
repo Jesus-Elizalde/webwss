@@ -20,7 +20,11 @@ const CollectionPage = () => {
     products
   );
 
-  return <div></div>;
+  return (
+    <div>
+      <h1>Collection Page</h1>
+    </div>
+  );
 };
 
 export default CollectionPage;
