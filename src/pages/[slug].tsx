@@ -1,13 +1,20 @@
+import { Color } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MainCard, TempMainCard } from "~/components/Card";
 import { api } from "~/utils/api";
+import { useSearchParams } from "next/navigation";
 
 const CollectionPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { slug } = router.query as {
     slug: string;
   };
+
+  const gte = searchParams.get("gte");
+  const lte = searchParams.get("lte");
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -17,6 +24,8 @@ const CollectionPage = () => {
 
   const { data: products, isLoading: Loading } = api.product.getMany.useQuery({
     slug: slug,
+    gte: gte ? parseInt(gte) : undefined,
+    lte: lte ? parseInt(lte) : undefined,
   });
   console.log(
     "🚀 ~ file: [...slug].tsx:17 ~ CollectionPage ~ products:",

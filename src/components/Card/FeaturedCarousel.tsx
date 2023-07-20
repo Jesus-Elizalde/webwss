@@ -22,7 +22,7 @@ const FeaturedCarousel = () => {
             price={product.price}
             type={product.type}
             vendor={"vendor"}
-            url={getImageUrlFromProduct(product)}
+            url={product.variants[0]?.images[0]?.url}
           />
         </div>
       ))}

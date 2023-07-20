@@ -30,7 +30,7 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { slug, colors = [], sizes, types, gte, lte, vendors } = input;
+      const { slug, colors, sizes, types, gte, lte, vendors } = input;
 
       return ctx.prisma.product.findMany({
         where: {

@@ -6,14 +6,14 @@ import { type featuredCard } from "~/types";
 const FeaturedCard = ({ id, name, type, price, vendor, url }: featuredCard) => {
   return (
     <Link href={`/products/${id}`} className="carousel-item">
-      <div className="card card-normal min-h-[300px] min-w-[300px] bg-base-100">
+      <div className="card card-normal">
         <figure>
           <Image
             src={url || "/imagenotfound.svg"}
             alt={name}
             height={375}
             width={375}
-            className="object-contain"
+            className="aspect-square h-full w-full object-cover"
           />
         </figure>
         <div className=" mr-4 mt-3 flex flex-col">
