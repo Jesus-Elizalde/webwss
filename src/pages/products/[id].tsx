@@ -12,17 +12,17 @@ const CollectionPage = () => {
   };
   console.log("🚀 ~ file: [slug].tsx:11 ~ CollectionPage ~ slug:", id);
 
-  const { data: products } = api.product.getOne.useQuery({
+  const { data: product } = api.product.getOne.useQuery({
     id,
   });
-  console.log(
-    "🚀 ~ file: [slug].tsx:18 ~ CollectionPage ~ products:",
-    products
-  );
+  console.log("🚀 ~ file: [slug].tsx:18 ~ CollectionPage ~ products:", product);
 
   return (
     <div>
       <h1>Product Page</h1>
+      <p>{product?.name}</p>
+      <p>{product?.price}</p>
+      <p>{product?.type}</p>
     </div>
   );
 };
