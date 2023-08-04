@@ -3,6 +3,12 @@ import { Color } from "@prisma/client";
 import { publicProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const productRouter = createTRPCRouter({
+  getOne: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      return ctx.prisma.product.findUnique({ where: { id } });
+    }),
   getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.product.findMany({
       include: {
