@@ -22,7 +22,7 @@ const CollectionPage = () => {
 
   return (
     <div>
-      <h1>Collection Page</h1>
+      <h1>Product Page</h1>
     </div>
   );
 };
