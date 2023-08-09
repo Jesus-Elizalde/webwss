@@ -7,7 +7,18 @@ export const productRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      return ctx.prisma.product.findUnique({ where: { id } });
+      return ctx.prisma.product.findUnique({
+        where: { id },
+        include: {
+          vendor: true,
+          variants: {
+            include: {
+              sizes: true,
+              images: true,
+            },
+          },
+        },
+      });
     }),
   getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.product.findMany({
